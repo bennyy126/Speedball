@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class finishLine : MonoBehaviour
 {
     // Start is called before the first frame update
+    public bool isEnd;
+    public GameObject youWin;
     void Start()
     {
         
@@ -19,6 +21,13 @@ public class finishLine : MonoBehaviour
 
     void OnTriggerEnter()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if(isEnd == false)
+        {
+           SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+	}
+	else
+	{
+	   youWin.SetActive(true);
+	}
     }
 }

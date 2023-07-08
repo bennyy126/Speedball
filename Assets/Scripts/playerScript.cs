@@ -1,53 +1,72 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class playerScript : MonoBehaviour
 {
-    public GameObject rightPosition, leftPosition, deadPrefab;
+    public GameObject rightPosition, leftPosition, deadPrefab, car;
     bool changePosition, startGame;
     public float speed;
-    // Start is called before the first frame update
+    bool isDead = false;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (isDead)
+        {
+            return;
+        }
 
         GetComponent<Rigidbody>().AddForce(Vector3.forward * speed * Time.deltaTime);
 
-        if(changePosition == true && startGame == true){
+        if (changePosition && startGame)
+        {
             transform.position = Vector3.Lerp(transform.position, new Vector3(rightPosition.transform.position.x, transform.position.y, transform.position.z), 10f * Time.deltaTime);
         }
-        if(changePosition == false && startGame == true){
+
+        if (!changePosition && startGame)
+        {
             transform.position = Vector3.Lerp(transform.position, new Vector3(leftPosition.transform.position.x, transform.position.y, transform.position.z), 10f * Time.deltaTime);
         }
 
-        if(Input.GetMouseButtonDown(0)){
+        startGame = true;
 
-            startGame = true;
-
-            if(changePosition == false){
-                changePosition = true;
-            } else if(changePosition == true){
-                changePosition = false;
-            }
+        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            changePosition = true;
         }
-        
+
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            changePosition = false;
+        }
     }
 
-    void OnTriggerEnter(Collider other){
-        if(other.tag == "wall"){
+    void OnTriggerEnter(Collider other)
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        if (other.tag == "wall")
+        {
+            isDead = true;
+            car.gameObject.SetActive(false);
             transform.gameObject.SetActive(false);
-            for(int i = 0; i < 17; i++){
-                Instantiate(deadPrefab, transform.position, Quaternion.identity);
+
+            for (int i = 0; i < 1; i++)
+            {
+                Instantiate(deadPrefab, transform.position, transform.rotation);
             }
         }
 
-        if(other.tag == "finish"){
+        if (other.tag == "finish")
+        {
             Debug.Log("Finish");
         }
     }
